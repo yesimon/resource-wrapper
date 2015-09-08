@@ -1,0 +1,7 @@
+#!/bin/bash
+# Shim --nproc
+DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+source "$DIR/resource_wrapper_lib.sh"
+
+nslots_replace_opt ARGS --opt --nproc -- "$@"
+exec metaphlan.py $ARGS

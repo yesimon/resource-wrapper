@@ -1,0 +1,12 @@
+#!/bin/bash
+# Shim threads for bwa mem
+DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+source "$DIR/resource_wrapper_lib.sh"
+
+if [[ "$1" == mem ]]; then
+    shift 1
+    nslots_replace_opt ARGS --opt -t -- "$@"
+    exec bwa mem $ARGS
+else
+    exec bwa "$@"
+fi

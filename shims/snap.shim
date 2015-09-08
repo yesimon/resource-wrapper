@@ -1,0 +1,40 @@
+#!/bin/bash
+# Shim each command sent to snap single/paired since each segment joined by
+# ' , ' is essentially a full args string.
+DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+source "$DIR/resource_wrapper_lib.sh"
+
+if [[ "$1" == "index" ]]; then
+    nslots_replace_opt ARGS --opt -tMaxThreads --location after -- "$@"
+    exec snap $ARGS
+    exit $?
+fi
+
+
+in_args=( "$@" )
+i=0
+segment_i=0
+run_args=""
+while [[ "$i" -lt "$#" ]]; do
+    a="${in_args[$i]}"
+    case "$a" in
+        , ) nslots_replace_opt SEGMENT_ARGS --opt -t --location after -- "$segment_args"
+            segments["$segment_i"]="$SEGMENT_ARGS"
+            segment_args=""
+            segment_i=$(( $segment_i + 1 ))
+            ;;
+        * ) segment_args="$segment_args $a";;
+    esac
+    i=$(( $i + 1 ))
+done
+nslots_replace_opt SEGMENT_ARGS --opt -t --location after -- "$segment_args"
+segments["$segment_i"]="$SEGMENT_ARGS"
+for i in "${segments[@]}"
+do
+    args="$args , $i"
+done
+# Strip out first comma
+args=${args:3}
+echo "$args"
+
+exec snap $args

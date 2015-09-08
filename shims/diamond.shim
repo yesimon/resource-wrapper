@@ -1,0 +1,7 @@
+#!/bin/bash
+# Shim -p.
+DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+source "$DIR/resource_wrapper_lib.sh"
+
+nslots_replace_opt ARGS --opt -p --location after -- "$@"
+exec diamond $ARGS

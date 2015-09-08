@@ -1,0 +1,24 @@
+#!/bin/bash
+# Shim -m as java heap memory.
+DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+source "$DIR/resource_wrapper_lib.sh"
+
+picard_heap_memory_opt() {
+    local __outvar="$1"
+    shift 1
+    # Suffix local var to avoid potential shadowing in eval
+    local args__jvm_heap_memory_opt
+    local mem_MiB
+    determine_memory_limit mem_MiB
+    if [[ mem_MiB -gt 0 ]]; then
+        regex_replace_opt args__jvm_heap_memory_opt --opt "-m" \
+                          --value "${mem_MiB}m" -- "$@"
+    else
+        # Not running in cluster context. Don't do replacements.
+        args__jvm_heap_memory_opt="$@"
+    fi
+    eval $__outvar=\$args__jvm_heap_memory_opt
+}
+
+picard_heap_memory_opt ARGS "$@"
+exec /seq/software/picard/current/bin/runPicardCommand.sh $ARGS
