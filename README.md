@@ -67,7 +67,7 @@ and a simple example shim script is:
 
 ```
 #!/bin/bash
-source "path/to/resource_wrapper_lib.sh"
+source resource_wrapper_lib.sh
 
 nslots_replace_opt ARGS --opt -p -- "$@"
 exec bowtie2 $ARGS
@@ -76,3 +76,9 @@ exec bowtie2 $ARGS
 This is pretty much equivalent to the above wrapper script example, but you can
 basically call `bowtie2.shim` just like you would `bowtie2` so it can be a drop
 in replacement for your current pipeline and regular usage.
+
+## Installation
+
+The only requirement is that `bin/resource_wrapper*.sh` can be found on `PATH`.
+Due to the directory structure this can simply be 'stow'ed to a `PREFIX`
+directory, manually copied or symlinked.

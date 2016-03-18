@@ -65,6 +65,14 @@ nslots_replace_opt() {
 determine_nslots() {
     if [[ -n "$LSB_DJOB_NUMPROC" ]]; then
         return $LSB_DJOB_NUMPROC
+    elif [[ -n "$SGE_CELL" && -n "$JOB_ID" ]]; then
+        local parallel
+        parallel=$(qstat -j "$JOB_ID" | grep "^parallel environment")
+        if [[ $? -eq 0 ]]; then
+            return $(echo "$parallel" | cut -f6 -d' ')
+        else
+            return 1
+        fi
     elif [[ -n "$NSLOTS" ]]; then
         return $NSLOTS
     elif [[ "$1" == "nproc" ]]; then
@@ -139,12 +147,29 @@ lsf_memory_limit() {
     eval $__outvar=\$mem_lsf_memory_limit
 }
 
+uge_memory_limit() {
+    # UGE reports memory in XiB, where X=M,G, etc.
+    local __outvar="$1"
+    local suffix="${SGE_HGR_m_mem_free: -1}"
+    local val="${SGE_HGR_m_mem_free:0:${#SGE_HGR_m_mem_free}-1}"
+    if [[ "$suffix" == "G" ]]; then
+        local mem_MiB_float=$(bc <<< "scale=0; $val * 1024")
+    elif [[ "$suffix==M" ]]; then
+        local mem_MiB_float="$val"
+    fi
+    local mem_MiB="${mem_MiB_float%.*}"
+    eval $__outvar=\$mem_MiB
+}
+
 determine_memory_limit() {
     local __outvar="$1"
     shift 1
     local mem__determine_memory_limit
     if [[ -n "$LSB_JOBID" ]]; then
         lsf_memory_limit mem__determine_memory_limit
+        eval $__outvar=\$mem__determine_memory_limit
+    elif [[ -n "$SGE_CELL" ]]; then
+        uge_memory_limit mem__determine_memory_limit
         eval $__outvar=\$mem__determine_memory_limit
     else
         eval $__outvar=0

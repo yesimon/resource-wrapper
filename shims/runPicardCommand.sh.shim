@@ -1,7 +1,6 @@
 #!/bin/bash
 # Shim -m as java heap memory.
-DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
-source "$DIR/resource_wrapper_lib.sh"
+source resource_wrapper_lib.sh
 
 picard_heap_memory_opt() {
     local __outvar="$1"

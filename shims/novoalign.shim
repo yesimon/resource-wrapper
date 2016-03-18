@@ -1,0 +1,6 @@
+#!/bin/bash
+# Shim -c.
+source resource_wrapper_lib.sh
+
+nslots_replace_opt ARGS --opt -c -- "$@"
+exec novoalign $ARGS

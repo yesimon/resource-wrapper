@@ -1,0 +1,6 @@
+#!/bin/bash
+# Shim --maxCores
+source resource_wrapper_lib.sh
+
+nslots_replace_opt ARGS --opt --maxCores -- "$@"
+exec /idi/sabeti-scratch/yesimon/linuxbrew/opt/megan/MEGAN $ARGS

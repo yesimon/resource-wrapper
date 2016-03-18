@@ -1,8 +1,7 @@
 #!/bin/bash
 # Shim each command sent to snap single/paired since each segment joined by
 # ' , ' is essentially a full args string.
-DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
-source "$DIR/resource_wrapper_lib.sh"
+source resource_wrapper_lib.sh
 
 if [[ "$1" == "index" ]]; then
     nslots_replace_opt ARGS --opt -tMaxThreads --location after -- "$@"

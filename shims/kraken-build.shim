@@ -1,7 +1,6 @@
 #!/bin/bash
 # Shim --threads.
-DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
-source "$DIR/resource_wrapper_lib.sh"
+source resource_wrapper_lib.sh
 
 nslots_replace_opt ARGS --opt --threads -- "$@"
 exec kraken-build $ARGS

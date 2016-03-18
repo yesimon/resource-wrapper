@@ -1,0 +1,6 @@
+#!/bin/bash
+# Shim --nproc
+source resource_wrapper_lib.sh
+
+nslots_replace_opt ARGS --opt --nproc -- "$@"
+exec metaphlan2.py $ARGS
