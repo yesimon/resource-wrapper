@@ -59,6 +59,7 @@ nslots_replace_opt() {
     fi
 }
 
+
 # Determine number of slots if in cluster context.
 # If the first argument is nproc, actually use nproc command to get current
 # number of cpu cores, otherwise just return 0 for "no info".
@@ -104,12 +105,14 @@ regex_replace_opt() {
     shift 1
     local location="before"
     local sep=" "
+    local suffix=""
     while true; do
         case "$1" in
             --opt ) local opt="$2"; shift 2;;
             --value ) local value="$2"; shift 2;;
             --sep ) sep="$2"; shift 2;;
             --location ) location="$2"; shift 2;;
+            --suffix ) suffix="$2"; shift 2;;
             -- ) shift; break ;;
             * ) break ;;
         esac
@@ -121,10 +124,11 @@ regex_replace_opt() {
         # Option was not found, return simple prepend of desired option.
         local prepped_args="$@"
     fi
+    local optstring="$opt$sep$value$suffix"
     if [[ $location == "before" ]]; then
-        local args__regex_replace_opt="$opt$sep$value $prepped_args"
+        local args__regex_replace_opt="$optstring $prepped_args"
     elif [[ $location == "after" ]]; then
-        local args__regex_replace_opt="$prepped_args $opt$sep$value"
+        local args__regex_replace_opt="$prepped_args $optstring"
     fi
     eval $__outvar=\$args__regex_replace_opt
 }
