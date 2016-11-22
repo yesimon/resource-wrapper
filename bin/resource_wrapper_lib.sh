@@ -154,8 +154,8 @@ lsf_memory_limit() {
 uge_memory_limit() {
     # UGE reports memory in XiB, where X=M,G, etc.
     local __outvar="$1"
-    local suffix="${SGE_HGR_m_mem_free: -1}"
-    local val="${SGE_HGR_m_mem_free:0:${#SGE_HGR_m_mem_free}-1}"
+    local suffix="${SGE_HGR_h_vmem: -1}"
+    local val="${SGE_HGR_h_vmem:0:${#SGE_HGR_h_vmem}-1}"
     if [[ "$suffix" == "G" ]]; then
         local mem_MiB_float=$(bc <<< "scale=0; $val * 1024")
     elif [[ "$suffix==M" ]]; then
